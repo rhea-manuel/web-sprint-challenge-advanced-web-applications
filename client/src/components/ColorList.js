@@ -22,7 +22,27 @@ const ColorList = ({ colors, updateColors }) => {
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
-  };
+
+    axiosWithAuth().put(`/colors/${colorToEdit.id}`, colorToEdit)
+      .then((res) => {
+        console.log(res.data)
+        update()
+      })
+      .catch((res) => {
+        console.log(res.data)
+      })
+
+  }
+
+  const update = () => {
+
+    axiosWithAuth().get("/colors").then(req => {
+      updateColors(req.data)
+    }).catch(err => {
+      console.log(err)
+    })
+
+  }
 
   const deleteColor = color => {
     // make a delete request to delete this color
@@ -33,12 +53,7 @@ const ColorList = ({ colors, updateColors }) => {
       if (element.color === color.color) {
         console.log(element.color)
         axiosWithAuth().delete(`colors/${element.id}`).then((res) => {
-          axiosWithAuth().get("/colors").then(req => {
-            // console.log(req.data)
-            updateColors(req.data)
-          }).catch(err => {
-            console.log(err)
-          })
+
         })
       }
 
