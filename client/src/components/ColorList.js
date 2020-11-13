@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, forceUpdate } from "react";
 import axios from "axios";
+import { axiosWithAuth } from "./axiosWithAuth";
 
 const initialColor = {
   color: "",
@@ -25,7 +26,25 @@ const ColorList = ({ colors, updateColors }) => {
 
   const deleteColor = color => {
     // make a delete request to delete this color
-  };
+    console.log(color)
+
+    colors.forEach(element => {
+
+      if (element.color === color.color) {
+        console.log(element.color)
+        axiosWithAuth().delete(`colors/${element.id}`).then((res) => {
+          axiosWithAuth().get("/colors").then(req => {
+            // console.log(req.data)
+            updateColors(req.data)
+          }).catch(err => {
+            console.log(err)
+          })
+        })
+      }
+
+    })
+
+  }
 
   return (
     <div className="colors-wrap">
@@ -35,11 +54,11 @@ const ColorList = ({ colors, updateColors }) => {
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
               <span className="delete" onClick={e => {
-                    e.stopPropagation();
-                    deleteColor(color)
-                  }
-                }>
-                  x
+                e.stopPropagation();
+                deleteColor(color)
+              }
+              }>
+                x
               </span>{" "}
               {color.color}
             </span>
